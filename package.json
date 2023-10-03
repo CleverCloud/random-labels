@@ -1,0 +1,13 @@
+{
+  "name": "@clevercloud/random-labels",
+  "version": "0.0.1",
+  "description": "Randomize a list of labels and display them in a suspenseful way",
+  "license": "Apache-2.0",
+  "type": "module",
+  "dependencies": {
+    "clipboardy": "^3.0.0"
+  },
+  "bin": {
+    "random-labels": "./random-labels.js"
+  }
+}
