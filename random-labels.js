@@ -2,15 +2,16 @@
 
 import { setTimeout } from 'timers/promises';
 import clipboardy from 'clipboardy';
+import { spawn } from 'child_process';
 
 const CLIPBOARD_OPTION = "--clipboard";
 
 async function main () {
 
-
   const args = process.argv.slice(2);
   const shouldCopyToClipboard = args.includes(CLIPBOARD_OPTION);
-  const labels = args.filter((arg)=>arg !== CLIPBOARD_OPTION );
+  const labels = args.filter((arg) => arg !== CLIPBOARD_OPTION);
+  const isWayland = process.env.XDG_SESSION_TYPE === 'wayland';
 
   function run () {
     const remainLabels = labels.slice();
@@ -38,9 +39,22 @@ async function main () {
 
   if (shouldCopyToClipboard) {
     const randomLabelsMarkdown = randomLabels
-        .map((name) => `* ${name}`)
-        .join('\n');
-    clipboardy.writeSync(randomLabelsMarkdown);
+      .map((name) => `* ${name}`)
+      .join('\n');
+
+    clipboardy.write(randomLabelsMarkdown)
+      .catch((error) => {
+        if (!error.message.includes("Couldn't find the `xsel` binary and fallback didn't work.") || !isWayland) {
+          console.error(error);
+        }
+      });
+
+    // workaround because `clipboardy` does not support Wayland (https://github.com/sindresorhus/clipboardy/issues/38)
+    // we silence errors because gnome users may not need/have wl-copy even on wayland, gnome makes xclip / xsel work anyway
+    if (isWayland) {
+      spawn('wl-copy', [randomLabelsMarkdown], { stdio: 'ignore' })
+        .on('error', () => {});
+    }
   }
 
 }
