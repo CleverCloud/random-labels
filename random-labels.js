@@ -39,7 +39,7 @@ async function main () {
 
   if (shouldCopyToClipboard) {
     const randomLabelsMarkdown = randomLabels
-      .map((name) => `* ${name}`)
+      .map((name) => `- ${name}`)
       .join('\n');
 
     clipboardy.write(randomLabelsMarkdown)

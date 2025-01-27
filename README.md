@@ -33,7 +33,7 @@ random-labels tutu toto titi --clipboard
 This will copy the list as Markdown like this:
 
 ```markdown
-* tutu
-* titi
-* toto
+- tutu
+- titi
+- toto
 ```
