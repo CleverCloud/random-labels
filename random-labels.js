@@ -52,11 +52,13 @@ async function main () {
     // workaround because `clipboardy` does not support Wayland (https://github.com/sindresorhus/clipboardy/issues/38)
     // we silence errors because gnome users may not need/have wl-copy even on wayland, gnome makes xclip / xsel work anyway
     if (isWayland) {
-      spawn('wl-copy', [randomLabelsMarkdown], { stdio: 'ignore' })
-        .on('error', () => {});
+      // `--` is used so that "- toto\n-tata" is not interpreted as an option
+      spawn("wl-copy", ["--", randomLabelsMarkdown], { stdio: "ignore" }).on(
+        "error",
+        () => {},
+      );
     }
   }
-
 }
 
 main();
